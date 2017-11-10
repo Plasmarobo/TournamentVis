@@ -1,0 +1,21 @@
+{
+  "name": "tourney_vis",
+  "version": "1.0.0",
+  "description": "A tournament mqtt visual",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/Plasmarobo/tourney_vis.git"
+  },
+  "author": "Austen Higgins-Cassidy",
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "mqtt": "^2.13.1",
+    "nodemon": "^1.12.1"
+  }
+}

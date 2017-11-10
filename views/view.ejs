@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tournament</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <div class="header">
+      <p><h1><%= name %></h1></p>
+      <% if (tourney.finished) { %>
+        <p>Winner: <h2><%= tourney.winner.name %></h2></p>
+        <script>setTimeout(function() {window.location.reload(true);}, 360000);</script>
+      <% } else { %>
+        <p><h3><%= tourney.preseason ? "Tournament starts" : "Current match ends" %> in: </h3><h2><div id="countdown"></div></h2></p>
+        <script type="text/javascript">
+          var countDownDate = <%= tourney.preseason ? tourney.season_start : tourney.match_start %>;
+          var countHandle = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = countDownDate - now;
+            if (distance <= 0) {
+              window.location.reload(true);
+            }
+            var d = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var s = Math.floor((distance % (1000 * 60)) / 1000);
+            document.getElementById("countdown").innerHTML = d +
+              " Days, " +
+              h.toString().padStart(2, '0') + ":" +
+              m.toString().padStart(2, '0') + ":"
+              + s.toString().padStart(2, '0');
+          }, 1000);
+        </script>
+        <% if (tourney.preseason) { %>
+         <form action="/<%= name %>/start" method="post">
+          <input type="submit" class="ghost-button" value="Start Now!">
+        </form>
+        <% } %>
+      <% } %>
+    <p>
+      <div>Player Type:
+        <%= tourney.player_field.replace("_", " ") + " " %>
+      </div>
+      <div>Score Type:
+        <%= tourney.score_field.replace("_", " ") + " " %>
+      </div>
+      <div>Score Ranking:
+        <%= tourney.score_type.replace("_", " ") + " " %>
+      </div></p>
+    </div>
+    <main id="tourney">
+      <% if (tourney.preseason) { %>
+        <h2>Current Players</h2>
+        <ul>
+          <% sortable = []; for (var player in tourney.players) sortable.push([player, tourney.players[player].score]);
+          sortable.sort(function(a, b){ return b[1] - a[1]; }); %>
+          <% for (var i = 0; i < sortable.length; ++i) { %>
+            <li><b><%= sortable[i][0] %></b> <%= sortable[i][1] %></li>
+          <% } %>
+        </ul>
+      <% } else { %>
+        <% for (var round = 0; round < tourney.brackets.length; ++round) { %>
+          <% console.log(tourney.brackets[round]); %>
+          <ul class="round round-<%= round+1 %>">
+            <% for (var j = 0; j < tourney.brackets[round].length; ++j) { %>
+              <% var match = tourney.brackets[round][j]; %>
+              <li class="spacer">&nbsp;</li>
+              <li class="game game-top">
+                <%= match.a.name.length > 12 ? match.a.name.substring(0, 12) + "..." : match.a.name %>
+                <span>
+                  <%= match.a.score %>
+                </span>
+              </li>
+              <li class="game game-spacer">&nbsp;</li>
+              <li class="game game-bottom">
+                <% if (match.hasOwnProperty("b")) { %>
+                  <%= match.b.name.length > 12 ? match.b.name.substring(0, 12) + "..." : match.b.name %>
+                  <span><%= match.b.score %></span>
+                  <% } else { %>
+                  BYE
+                  <span>0</span>
+                  <% } %>
+              </li>
+            <% } %>
+            <li class="spacer">&nbsp;</li>
+          </ul>
+        <% } %>
+      <% } %>
+    </main>
+  </body>
+</html>

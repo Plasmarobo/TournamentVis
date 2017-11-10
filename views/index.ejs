@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tournament</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <div class="container">
+      <fieldset>
+        <form action="/" method="post">
+          <input name="tournament_name" type="text" class="ghost-input" placeholder="Name Tournament" required>
+          <select name="tournament_player" required>
+            <option value="merchant_name">Merchant</option>
+            <option value="location_name">Location</option>
+            <option value="app_name">App Name</option>
+            <option value="app_id">App ID</option>
+            <option value="postal_code">Postal Code</option>
+          </select>
+          <select name="tournament_score" required>
+            <option value="spend_amount">Spend Amount</option>
+            <option value="ready_time">Ready Time</option>
+            <option value="earn_amount">Earn Amount</option>
+            <option value="tip_amount">Tip Amount</option>
+            <option value="created_at">Created At</option>
+          </select>
+          <select name="tournament_score_type" required>
+            <option value= "high_value">High Value</option>
+            <option value="low_value">Low Value</option>
+            <option value="high_hits">High Hits</option>
+            <option value="low_hits">Low Hits</option>
+          </select>
+          <input name="tournament_period" type="text" placeholder="DD:HH:MM" pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}" required>
+          <input type="submit" class="ghost-button" value="Start Tournament">
+        </form>
+      </fieldset>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+var config = {};
+
+config.mqtt_client_name = "CLIENTNAME";
+config.mqtt_hostname = 'MQTT IP OR HOSTNAME';
+config.mqtt_topic = 'TOPIC';
+
+config.listen_port = 8080;
+
+module.exports = config;
