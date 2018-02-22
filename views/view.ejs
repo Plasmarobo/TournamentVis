@@ -10,7 +10,7 @@
     <div class="header">
       <p><h1><%= name %></h1></p>
       <% if (tourney.finished) { %>
-        <p>Winner: <h2><%= tourney.winner.name %></h2></p>
+        <p>Winner: <h2><%= tourney.winner.name %> (<%= tourney.winner.last_score %>)</h2></p>
         <script>setTimeout(function() {window.location.reload(true);}, 360000);</script>
       <% } else { %>
         <p><h3><%= tourney.preseason ? "Tournament starts" : "Current match ends" %> in: </h3><h2><div id="countdown"></div></h2></p>
@@ -62,30 +62,33 @@
         </ul>
       <% } else { %>
         <% for (var round = 0; round < tourney.brackets.length; ++round) { %>
-          <% console.log(tourney.brackets[round]); %>
-          <ul class="round round-<%= round+1 %>">
-            <% for (var j = 0; j < tourney.brackets[round].length; ++j) { %>
-              <% var match = tourney.brackets[round][j]; %>
+          <% if (tourney.brackets[round].length) { %>
+            <ul class="round round-<%= round+1 %>">
+              <% for (var j = 0; j < tourney.brackets[round].length; ++j) { %>
+                <% var match = tourney.brackets[round][j]; %>
+                <li class="spacer">&nbsp;</li>
+                <li class="game game-top">
+                  <%= match.a.name.length > 12 ? match.a.name.substring(0, 12) + "..." : match.a.name %>
+                  <span>
+                    <%= match.a.score %>
+                  </span>
+                </li>
+                <% if (round <= tourney.depth) { %>
+                  <li class="game game-spacer">&nbsp;</li>
+                  <li class="game game-bottom">
+                    <% if (match.hasOwnProperty("b")) { %>
+                      <%= match.b.name.length > 12 ? match.b.name.substring(0, 12) + "..." : match.b.name %>
+                      <span><%= match.b.score %></span>
+                      <% } else { %>
+                      Bye&nbsp;
+                      <span>0</span>
+                    <% } %>
+                  </li>
+                <% } %>
+              <% } %>
               <li class="spacer">&nbsp;</li>
-              <li class="game game-top">
-                <%= match.a.name.length > 12 ? match.a.name.substring(0, 12) + "..." : match.a.name %>
-                <span>
-                  <%= match.a.score %>
-                </span>
-              </li>
-              <li class="game game-spacer">&nbsp;</li>
-              <li class="game game-bottom">
-                <% if (match.hasOwnProperty("b")) { %>
-                  <%= match.b.name.length > 12 ? match.b.name.substring(0, 12) + "..." : match.b.name %>
-                  <span><%= match.b.score %></span>
-                  <% } else { %>
-                  BYE
-                  <span>0</span>
-                  <% } %>
-              </li>
-            <% } %>
-            <li class="spacer">&nbsp;</li>
-          </ul>
+            </ul>
+          <% } %>
         <% } %>
       <% } %>
     </main>

@@ -61,6 +61,7 @@ function tournament(score_field, player_field, score_type, game_period_ms) {
   this.advance_handle = null;
   this.finished = false;
   this.winner = null;
+  this.depth = 0;
 }
 
 tournament.prototype.save = function(filename) {
@@ -98,12 +99,12 @@ tournament.prototype.start_season = function() {
   while(pad_len < len) pad_len *= 2;
   console.log("Need a pad of " + pad_len);
   for(var i = len; i < pad_len; ++i) {
-    this.players["BYE" + i] = { score: 0, seed: 0 };
+    this.players["Bye " + i] = { score: -1, seed: 0 };
     console.log("Adding Bye");
   }
   for(var player in this.players) {
     var i = 0;
-    var match = {name: player, score: 0, seed: this.players[player].score};
+    var match = {name: player, last_score: 0, score: 0, seed: this.players[player].score};
     if (matches.length == 0) {
       matches.push(match);
       continue;
@@ -127,12 +128,14 @@ tournament.prototype.start_season = function() {
     bracket.push({a: matches.shift()});
   }
   console.log(bracket);
+  this.depth = Math.ceil(Math.log2(Object.keys(bracket).length));
   this.brackets.push(bracket);
   this.advance_hook = function(){
     clearTimeout(this.advance_handle);
     if (this.next_bracket() == false) {
       this.finished = true;
       this.winner = this.brackets[this.brackets.length - 1][0].a;
+      clearTimeout(this.advance_handle);
     } else {
       this.match_start = new Date().getTime() + this.game_period;
       this.advance_handle = setTimeout(this.advance_hook.bind(this), this.game_period);
@@ -195,17 +198,29 @@ tournament.prototype.next_bracket = function() {
     var next_match;
     if (!match.hasOwnProperty("b") || (match.a.score > match.b.score)) {
       console.log("A wins");
-       next_match = {name: match.a.name, score: 0, seed: match.a.seed};
+       next_match = {name: match.a.name,
+                     last_score: match.a.score,
+                     score: 0,
+                     seed: match.a.seed};
     } else if (match.b.score > match.a.score) {
       console.log("B wins");
-      next_match = {name: match.b.name, score: 0, seed: match.b.seed};
+      next_match = {name: match.b.name,
+                    last_score: match.b.score,
+                    score: 0,
+                    seed: match.b.seed};
     } else {
       if (match.a.seed > match.b.seed) {
         console.log("A wins by default");
-        next_match = {name: match.a.name, score: 0, seed: match.a.seed};
+        next_match = {name: match.a.name,
+                      last_score: match.a.score,
+                      score: 0,
+                      seed: match.a.seed};
       } else {
         console.log("B wins by default");
-        next_match = {name: match.b.name, score: 0, seed: match.b.seed};
+        next_match = {name: match.b.name,
+                      last_score: match.b.score,
+                      score: 0,
+                      seed: match.b.seed};
       }
     }
 
